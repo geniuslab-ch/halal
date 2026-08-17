@@ -1,0 +1,72 @@
+@import "tailwindcss";
+
+:root {
+  /* ---- Halal Vaud design tokens ---- */
+  --hv-linen: #f6f4ee;        /* page background — warm stone, not cream-cliché */
+  --hv-paper: #ffffff;        /* card surfaces */
+  --hv-ink: #1c1b17;          /* primary text */
+  --hv-ink-soft: #58554a;     /* secondary text */
+  --hv-pine: #1f3d2b;         /* primary brand — deep alpine green */
+  --hv-pine-light: #2f5940;
+  --hv-saffron: #d99a1b;      /* spice-market accent, used sparingly */
+  --hv-saffron-soft: #f6e7c4;
+  --hv-line: #e4e0d5;         /* hairline borders */
+  --hv-clay: #b5473a;         /* out-of-stock / alert */
+
+  --font-display: var(--font-fraunces);
+  --font-body: var(--font-inter);
+}
+
+@theme inline {
+  --color-linen: var(--hv-linen);
+  --color-paper: var(--hv-paper);
+  --color-ink: var(--hv-ink);
+  --color-ink-soft: var(--hv-ink-soft);
+  --color-pine: var(--hv-pine);
+  --color-pine-light: var(--hv-pine-light);
+  --color-saffron: var(--hv-saffron);
+  --color-saffron-soft: var(--hv-saffron-soft);
+  --color-line: var(--hv-line);
+  --color-clay: var(--hv-clay);
+
+  --font-display: var(--font-display);
+  --font-body: var(--font-body);
+}
+
+* {
+  border-color: var(--hv-line);
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background: var(--hv-linen);
+  color: var(--hv-ink);
+  font-family: var(--font-body), ui-sans-serif, system-ui, sans-serif;
+}
+
+h1, h2, h3, h4, .font-display {
+  font-family: var(--font-display), Georgia, serif;
+}
+
+/* subtle dot-grid texture used behind the hero — no external assets required */
+.hv-texture {
+  background-image: radial-gradient(var(--hv-line) 1px, transparent 1px);
+  background-size: 18px 18px;
+}
+
+.hv-focus:focus-visible {
+  outline: 2px solid var(--hv-pine);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
