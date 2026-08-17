@@ -1,0 +1,332 @@
+// Halal Vaud — Prisma schema
+// Product-first architecture: Product is a global catalogue entity.
+// ShopProduct is the join table representing "this shop sells this product at this price".
+//
+// Uses PostgreSQL (works out of the box with Vercel Postgres / Neon / Supabase).
+// Point DATABASE_URL at your Postgres instance — see README for the Vercel setup.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ---------- People & Access ----------
+
+enum Role {
+  CUSTOMER
+  SHOP_OWNER
+  ADMIN
+}
+
+model User {
+  id            String   @id @default(cuid())
+  email         String   @unique
+  name          String?
+  phone         String?
+  city          String?
+  role          Role     @default(CUSTOMER)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  shops             Shop[]             @relation("ShopOwners")
+  reviews           Review[]
+  favouriteShops    FavouriteShop[]
+  favouriteProducts FavouriteProduct[]
+  customerRequests  CustomerRequest[]
+  productAlerts     ProductAlert[]
+  analyticsEvents   AnalyticsEvent[]
+}
+
+// ---------- Geography ----------
+
+model City {
+  id        String   @id @default(cuid())
+  name      String   @unique
+  slug      String   @unique
+  latitude  Float?
+  longitude Float?
+  shops     Shop[]
+}
+
+// ---------- Shops ----------
+
+enum ShopStatus {
+  UNCLAIMED
+  PENDING
+  VERIFIED
+  REJECTED
+}
+
+enum PlanTier {
+  FREE
+  GROWTH
+  PRO
+}
+
+model Shop {
+  id          String     @id @default(cuid())
+  name        String
+  slug        String
+  description String?
+  logo        String?
+  cover       String?
+  address     String?
+  cityId      String?
+  city        City?      @relation(fields: [cityId], references: [id])
+  latitude    Float?
+  longitude   Float?
+  phone       String?
+  whatsapp    String?
+  website     String?
+  instagram   String?
+  delivery    Boolean    @default(false)
+  pickup      Boolean    @default(false)
+  paymentMethods String? // comma separated for MVP simplicity
+  languages   String?    // comma separated
+  status      ShopStatus @default(UNCLAIMED)
+  plan        PlanTier   @default(FREE)
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+
+  owners          User[]           @relation("ShopOwners")
+  openingHours    OpeningHour[]
+  shopProducts    ShopProduct[]
+  promotions      Promotion[]
+  reviews         Review[]
+  favouritedBy    FavouriteShop[]
+  analyticsEvents AnalyticsEvent[]
+
+  @@unique([cityId, slug])
+  @@index([status])
+}
+
+model OpeningHour {
+  id        String @id @default(cuid())
+  shopId    String
+  shop      Shop   @relation(fields: [shopId], references: [id], onDelete: Cascade)
+  dayOfWeek Int // 0 = Sunday ... 6 = Saturday
+  opensAt   String? // "09:00"
+  closesAt  String? // "19:00"
+  closed    Boolean @default(false)
+
+  @@index([shopId])
+}
+
+// ---------- Product catalogue (global, shop-independent) ----------
+
+model ProductCategory {
+  id       String            @id @default(cuid())
+  name     String
+  slug     String            @unique
+  parentId String?
+  parent   ProductCategory?  @relation("CategoryTree", fields: [parentId], references: [id])
+  children ProductCategory[] @relation("CategoryTree")
+  products Product[]
+}
+
+enum VerificationStatus {
+  UNVERIFIED
+  VERIFIED
+}
+
+model Product {
+  id          String   @id @default(cuid())
+  name        String
+  slug        String   @unique
+  brand       String?
+  categoryId  String?
+  category    ProductCategory? @relation(fields: [categoryId], references: [id])
+  description String?
+  image       String?
+  size        String?
+  weight      String?
+  unit        String?
+  tags        String? // comma separated
+  barcode     String?
+  attributes  String? // comma separated e.g. "halal,frozen,imported"
+  verification VerificationStatus @default(UNVERIFIED)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  shopProducts      ShopProduct[]
+  productAlerts     ProductAlert[]
+  favouritedBy      FavouriteProduct[]
+  mergedIntoId      String?
+  mergedInto        Product?  @relation("ProductMerge", fields: [mergedIntoId], references: [id])
+  mergedFrom        Product[] @relation("ProductMerge")
+}
+
+enum StockStatus {
+  IN_STOCK
+  LIMITED
+  UNKNOWN
+  OUT_OF_STOCK
+}
+
+// The relationship between one shop and one product — price & availability live HERE, never on Product.
+model ShopProduct {
+  id                   String      @id @default(cuid())
+  productId            String
+  product              Product     @relation(fields: [productId], references: [id], onDelete: Cascade)
+  shopId               String
+  shop                 Shop        @relation(fields: [shopId], references: [id], onDelete: Cascade)
+  price                Float
+  currency             String      @default("CHF")
+  stockStatus          StockStatus @default(UNKNOWN)
+  shopSpecificNote     String?
+  shopSpecificImage    String?
+  lastPriceUpdate      DateTime    @default(now())
+  lastAvailabilityUpdate DateTime  @default(now())
+  createdAt            DateTime    @default(now())
+  updatedAt            DateTime    @updatedAt
+
+  promotions Promotion[]
+  requests   CustomerRequest[]
+
+  @@unique([productId, shopId])
+  @@index([shopId])
+  @@index([productId])
+}
+
+enum PromotionStatus {
+  SCHEDULED
+  ACTIVE
+  EXPIRED
+}
+
+model Promotion {
+  id              String          @id @default(cuid())
+  shopProductId   String
+  shopProduct     ShopProduct     @relation(fields: [shopProductId], references: [id], onDelete: Cascade)
+  shopId          String
+  shop            Shop            @relation(fields: [shopId], references: [id], onDelete: Cascade)
+  originalPrice   Float
+  promoPrice      Float
+  description     String?
+  image           String?
+  startDate       DateTime
+  endDate         DateTime
+  status          PromotionStatus @default(SCHEDULED)
+  createdAt       DateTime        @default(now())
+
+  favouritedBy FavouritePromotion[]
+
+  @@index([shopId])
+  @@index([status])
+}
+
+// ---------- Reviews & Favourites ----------
+
+model Review {
+  id        String   @id @default(cuid())
+  shopId    String
+  shop      Shop     @relation(fields: [shopId], references: [id], onDelete: Cascade)
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  rating    Int
+  quality   Int?
+  price     Int?
+  service   Int?
+  variety   Int?
+  cleanliness Int?
+  comment   String?
+  moderated Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  @@index([shopId])
+}
+
+model FavouriteShop {
+  id     String @id @default(cuid())
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  shopId String
+  shop   Shop   @relation(fields: [shopId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, shopId])
+}
+
+model FavouriteProduct {
+  id        String  @id @default(cuid())
+  userId    String
+  user      User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  productId String
+  product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, productId])
+}
+
+model FavouritePromotion {
+  id          String    @id @default(cuid())
+  userId      String
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  promotionId String
+  promotion   Promotion @relation(fields: [promotionId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, promotionId])
+}
+
+// ---------- Demand intelligence ----------
+
+model CustomerRequest {
+  id            String       @id @default(cuid())
+  userId        String?
+  user          User?        @relation(fields: [userId], references: [id])
+  productText   String // free text, e.g. "Ethiopian injera"
+  cityText      String?
+  description   String?
+  shopProductId String? // filled in if it later maps to a real listing
+  shopProduct   ShopProduct? @relation(fields: [shopProductId], references: [id])
+  createdAt     DateTime     @default(now())
+
+  @@index([cityText])
+}
+
+model ProductAlert {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  productId String
+  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  cityText  String?
+  notified  Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  @@unique([userId, productId])
+}
+
+// ---------- Analytics ----------
+
+enum AnalyticsEventType {
+  SHOP_VIEW
+  PRODUCT_VIEW
+  PROMOTION_VIEW
+  SEARCH
+  WHATSAPP_CLICK
+  PHONE_CLICK
+  DIRECTIONS_CLICK
+  WEBSITE_CLICK
+  FAVOURITE_SHOP
+  FAVOURITE_PRODUCT
+  CUSTOMER_REQUEST
+  PRODUCT_REQUEST
+  OFFER_CLICK
+}
+
+model AnalyticsEvent {
+  id        String             @id @default(cuid())
+  type      AnalyticsEventType
+  shopId    String?
+  shop      Shop?              @relation(fields: [shopId], references: [id])
+  userId    String?
+  user      User?              @relation(fields: [userId], references: [id])
+  metadata  String? // JSON-encoded extra context
+  createdAt DateTime           @default(now())
+
+  @@index([shopId, type])
+  @@index([createdAt])
+}
