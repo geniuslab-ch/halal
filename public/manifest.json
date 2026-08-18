@@ -1,0 +1,19 @@
+{
+  "name": "Halal Vaud — Produits & Boutiques Halal",
+  "short_name": "Halal Vaud",
+  "description": "Trouvez des produits halal près de chez vous dans le Canton de Vaud. Comparez les prix et commandez en livraison.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#F7FAF7",
+  "theme_color": "#1B5E20",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "/logo.svg",
+      "sizes": "192x192 512x512",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ],
+  "categories": ["shopping", "food"]
+}

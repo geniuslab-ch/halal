@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Fraunces, Plus_Jakarta_Sans } from "next/font/google";
 import "./globals.css";
 import { Navbar } from "@/components/Navbar";
@@ -18,6 +18,13 @@ const plusJakarta = Plus_Jakarta_Sans({
   weight: ["400", "500", "600", "700", "800"],
 });
 
+export const viewport: Viewport = {
+  themeColor: "#1B5E20",
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 1,
+};
+
 export const metadata: Metadata = {
   title: {
     default: "Halal Vaud — Trouvez des produits halal près de chez vous",
@@ -25,6 +32,12 @@ export const metadata: Metadata = {
   },
   description:
     "Découvrez les supermarchés, bouchers et épiceries halal dans le Canton de Vaud. Trouvez des produits, comparez les prix et commandez en livraison.",
+  manifest: "/manifest.json",
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "black-translucent",
+    title: "Halal Vaud",
+  },
 };
 
 export default function RootLayout({
