@@ -29,34 +29,34 @@
   },
   "icons": [
     {
-      "src": "/logo.svg",
-      "sizes": "192x192 512x512 1024x1024",
-      "type": "image/svg+xml",
+      "src": "/android-chrome-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
       "purpose": "any maskable"
     },
     {
-      "src": "/icon-192.png",
-      "sizes": "192x192",
+      "src": "/android-chrome-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/apple-touch-icon.png",
+      "sizes": "180x180",
       "type": "image/png",
       "purpose": "any"
     },
     {
-      "src": "/icon-512.png",
-      "sizes": "512x512",
+      "src": "/favicon-32x32.png",
+      "sizes": "32x32",
       "type": "image/png",
       "purpose": "any"
     },
     {
-      "src": "/icon-192-maskable.png",
-      "sizes": "192x192",
+      "src": "/favicon-16x16.png",
+      "sizes": "16x16",
       "type": "image/png",
-      "purpose": "maskable"
-    },
-    {
-      "src": "/icon-512-maskable.png",
-      "sizes": "512x512",
-      "type": "image/png",
-      "purpose": "maskable"
+      "purpose": "any"
     }
   ],
   "shortcuts": [
@@ -65,21 +65,21 @@
       "short_name": "Produits",
       "description": "Trouvez des produits halal dans le Canton de Vaud",
       "url": "/search",
-      "icons": [{ "src": "/logo.svg", "sizes": "192x192" }]
+      "icons": [{ "src": "/android-chrome-192x192.png", "sizes": "192x192" }]
     },
     {
       "name": "Explorer les boutiques",
       "short_name": "Boutiques",
       "description": "Voir les boutiques halal près de chez vous",
       "url": "/search?tab=shops",
-      "icons": [{ "src": "/logo.svg", "sizes": "192x192" }]
+      "icons": [{ "src": "/android-chrome-192x192.png", "sizes": "192x192" }]
     },
     {
       "name": "Mes commandes",
       "short_name": "Commandes",
       "description": "Suivre mes commandes en livraison",
       "url": "/orders",
-      "icons": [{ "src": "/logo.svg", "sizes": "192x192" }]
+      "icons": [{ "src": "/android-chrome-192x192.png", "sizes": "192x192" }]
     }
   ],
   "screenshots": [
