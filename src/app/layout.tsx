@@ -4,6 +4,7 @@ import "./globals.css";
 import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
 import Providers from "@/components/Providers";
+import { ServiceWorkerRegister } from "@/components/ServiceWorkerRegister";
 
 const fraunces = Fraunces({
   variable: "--font-fraunces",
@@ -47,6 +48,7 @@ export default function RootLayout({
     <html lang="fr">
       <body className={`${fraunces.variable} ${plusJakarta.variable} antialiased`}>
         <Providers>
+          <ServiceWorkerRegister />
           <Navbar />
           <main className="min-h-[70vh]">{children}</main>
           <Footer />
