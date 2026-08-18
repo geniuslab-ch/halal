@@ -13,6 +13,20 @@
   "theme_color": "#1B5E20",
   "orientation": "portrait",
   "prefer_related_applications": false,
+  "related_applications": [],
+  "iarc_rating_id": "e84b0780-ae2f-4e15-8e58-663e2a056a02",
+  "launch_handler": {
+    "client_mode": "focus-existing"
+  },
+  "share_target": {
+    "action": "/search",
+    "method": "GET",
+    "params": {
+      "title": "q",
+      "text": "q",
+      "url": "q"
+    }
+  },
   "icons": [
     {
       "src": "/logo.svg",
