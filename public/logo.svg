@@ -1,0 +1,49 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" fill="none">
+  <!-- Outer circle -->
+  <circle cx="100" cy="100" r="96" stroke="#43A047" stroke-width="3" fill="white"/>
+  
+  <!-- Mosque dome arch -->
+  <path d="M100 20 C100 20 130 35 148 60 L148 80 L52 80 C52 80 52 60 70 45 Z" fill="#1B5E20" opacity="0.15"/>
+  <path d="M100 18 C115 25 135 42 145 65" stroke="#1B5E20" stroke-width="3" fill="none" stroke-linecap="round"/>
+  <path d="M100 18 C85 25 65 42 55 65" stroke="#1B5E20" stroke-width="3" fill="none" stroke-linecap="round"/>
+  <!-- Peak arch lines -->
+  <path d="M80 65 Q100 40 120 65" stroke="#1B5E20" stroke-width="2.5" fill="none"/>
+  
+  <!-- Crescent moon -->
+  <path d="M96 10 C101 8 107 10 109 15 C104 14 99 16 96 20 C93 15 91 12 96 10Z" fill="#43A047"/>
+  
+  <!-- Arabic text حلال -->
+  <text x="100" y="75" text-anchor="middle" font-size="22" fill="#43A047" font-family="serif" font-weight="bold">&#x62D;&#x644;&#x627;&#x644;</text>
+  
+  <!-- Halal Vaud text -->
+  <text x="74" y="108" font-size="18" fill="#1B5E20" font-family="Arial, sans-serif" font-weight="900">Halal</text>
+  <text x="118" y="108" font-size="18" fill="#43A047" font-family="Arial, sans-serif" font-weight="900">Vaud</text>
+  
+  <!-- Icons row: location pin | cart | CHF tag -->
+  <!-- Location pin -->
+  <path d="M68 122 C68 118 72 115 76 115 C80 115 84 118 84 122 C84 128 76 135 76 135 C76 135 68 128 68 122Z" fill="#43A047"/>
+  <circle cx="76" cy="122" r="3" fill="white"/>
+  <!-- Dividers -->
+  <line x1="90" y1="115" x2="90" y2="135" stroke="#1B5E20" stroke-width="1.5"/>
+  <!-- Cart -->
+  <path d="M96 120 L99 120 L103 130 L112 130 L115 122 L103 122" stroke="#1B5E20" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+  <circle cx="105" cy="133" r="1.5" fill="#1B5E20"/>
+  <circle cx="112" cy="133" r="1.5" fill="#1B5E20"/>
+  <!-- Divider -->
+  <line x1="120" y1="115" x2="120" y2="135" stroke="#1B5E20" stroke-width="1.5"/>
+  <!-- CHF tag -->
+  <path d="M126 118 L134 118 L136 125 L130 130 L124 125 Z" fill="#43A047"/>
+  <text x="130" y="126" text-anchor="middle" font-size="6" fill="white" font-family="Arial" font-weight="bold">CHF</text>
+  
+  <!-- Tagline -->
+  <text x="100" y="152" text-anchor="middle" font-size="7.5" fill="#1B5E20" font-family="Arial, sans-serif">Trouvez des produits halal</text>
+  <text x="100" y="163" text-anchor="middle" font-size="7.5" fill="#1B5E20" font-family="Arial, sans-serif">pr&#232;s de chez vous, et &#224; quel prix !</text>
+  
+  <!-- Swiss cross -->
+  <rect x="92" y="170" width="16" height="16" rx="3" fill="#DC2626"/>
+  <rect x="95" y="173" width="10" height="4" fill="white"/>
+  <rect x="99" y="170" width="4" height="10" fill="white"/>
+  
+  <!-- Decorative arc at bottom -->
+  <path d="M75 185 Q100 188 125 185" stroke="#43A047" stroke-width="2" fill="none"/>
+</svg>

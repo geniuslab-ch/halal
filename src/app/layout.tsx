@@ -1,8 +1,9 @@
 import type { Metadata } from "next";
-import { Fraunces, Inter } from "next/font/google";
+import { Fraunces, Plus_Jakarta_Sans } from "next/font/google";
 import "./globals.css";
 import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
+import Providers from "@/components/Providers";
 
 const fraunces = Fraunces({
   variable: "--font-fraunces",
@@ -11,19 +12,19 @@ const fraunces = Fraunces({
   style: ["normal", "italic"],
 });
 
-const inter = Inter({
-  variable: "--font-inter",
+const plusJakarta = Plus_Jakarta_Sans({
+  variable: "--font-plus-jakarta",
   subsets: ["latin"],
-  weight: ["400", "500", "600", "700"],
+  weight: ["400", "500", "600", "700", "800"],
 });
 
 export const metadata: Metadata = {
   title: {
-    default: "Halal Vaud — Find halal shops, products & offers near you",
+    default: "Halal Vaud — Trouvez des produits halal près de chez vous",
     template: "%s | Halal Vaud",
   },
   description:
-    "Discover halal supermarkets, butchers and grocery stores across the Canton of Vaud. Find products, compare prices, and see what's on offer near you.",
+    "Découvrez les supermarchés, bouchers et épiceries halal dans le Canton de Vaud. Trouvez des produits, comparez les prix et commandez en livraison.",
 };
 
 export default function RootLayout({
@@ -31,10 +32,12 @@ export default function RootLayout({
 }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="fr">
-      <body className={`${fraunces.variable} ${inter.variable} antialiased`}>
-        <Navbar />
-        <main className="min-h-[70vh]">{children}</main>
-        <Footer />
+      <body className={`${fraunces.variable} ${plusJakarta.variable} antialiased`}>
+        <Providers>
+          <Navbar />
+          <main className="min-h-[70vh]">{children}</main>
+          <Footer />
+        </Providers>
       </body>
     </html>
   );

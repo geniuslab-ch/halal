@@ -1,33 +1,48 @@
 @import "tailwindcss";
 
 :root {
-  /* ---- Halal Vaud design tokens ---- */
-  --hv-linen: #f6f4ee;        /* page background — warm stone, not cream-cliché */
-  --hv-paper: #ffffff;        /* card surfaces */
-  --hv-ink: #1c1b17;          /* primary text */
-  --hv-ink-soft: #58554a;     /* secondary text */
-  --hv-pine: #1f3d2b;         /* primary brand — deep alpine green */
-  --hv-pine-light: #2f5940;
-  --hv-saffron: #d99a1b;      /* spice-market accent, used sparingly */
-  --hv-saffron-soft: #f6e7c4;
-  --hv-line: #e4e0d5;         /* hairline borders */
-  --hv-clay: #b5473a;         /* out-of-stock / alert */
+  /* ---- Halal Vaud 2.0 design tokens — derived from logo palette ---- */
+  --hv-bg: #f7faf7;            /* very light green-tinted white */
+  --hv-paper: #ffffff;
+  --hv-pine: #1B5E20;          /* deep forest green — primary brand */
+  --hv-pine-mid: #2E7D32;      /* medium green */
+  --hv-green: #43A047;         /* bright green — from logo "Vaud" */
+  --hv-green-light: #E8F5E9;   /* very light green for backgrounds */
+  --hv-green-soft: #A5D6A7;    /* soft mint for hover */
+  --hv-ink: #0d1f0f;           /* near-black with green tint */
+  --hv-ink-soft: #4a5e4b;      /* muted green-grey text */
+  --hv-gold: #D97706;          /* warm amber for CHF/price accents */
+  --hv-gold-soft: #FEF3C7;     /* pale gold */
+  --hv-red: #DC2626;           /* Swiss cross accent */
+  --hv-red-soft: #FEE2E2;      /* pale red */
+  --hv-line: #C8E6C9;          /* green-tinted border */
+  --hv-shadow: 0 4px 24px rgba(27, 94, 32, 0.08);
+  --hv-shadow-lg: 0 12px 40px rgba(27, 94, 32, 0.15);
 
   --font-display: var(--font-fraunces);
-  --font-body: var(--font-inter);
+  --font-body: var(--font-plus-jakarta);
 }
 
 @theme inline {
-  --color-linen: var(--hv-linen);
+  --color-bg: var(--hv-bg);
   --color-paper: var(--hv-paper);
+  --color-pine: var(--hv-pine);
+  --color-pine-mid: var(--hv-pine-mid);
+  --color-green: var(--hv-green);
+  --color-green-light: var(--hv-green-light);
+  --color-green-soft: var(--hv-green-soft);
   --color-ink: var(--hv-ink);
   --color-ink-soft: var(--hv-ink-soft);
-  --color-pine: var(--hv-pine);
-  --color-pine-light: var(--hv-pine-light);
-  --color-saffron: var(--hv-saffron);
-  --color-saffron-soft: var(--hv-saffron-soft);
+  --color-gold: var(--hv-gold);
+  --color-gold-soft: var(--hv-gold-soft);
+  --color-hv-red: var(--hv-red);
+  --color-red-soft: var(--hv-red-soft);
   --color-line: var(--hv-line);
-  --color-clay: var(--hv-clay);
+  /* keep linen as alias */
+  --color-linen: var(--hv-bg);
+  --color-saffron: var(--hv-gold);
+  --color-saffron-soft: var(--hv-gold-soft);
+  --color-clay: var(--hv-red);
 
   --font-display: var(--font-display);
   --font-body: var(--font-body);
@@ -42,7 +57,7 @@ html {
 }
 
 body {
-  background: var(--hv-linen);
+  background: var(--hv-bg);
   color: var(--hv-ink);
   font-family: var(--font-body), ui-sans-serif, system-ui, sans-serif;
 }
@@ -51,15 +66,200 @@ h1, h2, h3, h4, .font-display {
   font-family: var(--font-display), Georgia, serif;
 }
 
-/* subtle dot-grid texture used behind the hero — no external assets required */
-.hv-texture {
-  background-image: radial-gradient(var(--hv-line) 1px, transparent 1px);
-  background-size: 18px 18px;
+/* ---- Glassmorphism utilities ---- */
+.glass {
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.6);
 }
 
+.glass-dark {
+  background: rgba(27, 94, 32, 0.85);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(67, 160, 71, 0.4);
+}
+
+/* ---- Gradient utilities ---- */
+.gradient-brand {
+  background: linear-gradient(135deg, var(--hv-pine) 0%, var(--hv-green) 100%);
+}
+
+.gradient-brand-text {
+  background: linear-gradient(135deg, var(--hv-pine) 0%, var(--hv-green) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.gradient-hero {
+  background: linear-gradient(
+    135deg,
+    #0d2b0f 0%,
+    #1B5E20 40%,
+    #2E7D32 70%,
+    #1a4a1d 100%
+  );
+}
+
+/* ---- Mesh background for hero ---- */
+.hero-mesh {
+  background-color: #1B5E20;
+  background-image:
+    radial-gradient(ellipse at 20% 50%, rgba(67, 160, 71, 0.3) 0%, transparent 60%),
+    radial-gradient(ellipse at 80% 20%, rgba(46, 125, 50, 0.4) 0%, transparent 50%),
+    radial-gradient(ellipse at 60% 80%, rgba(27, 94, 32, 0.5) 0%, transparent 50%);
+}
+
+/* ---- Geometric pattern overlay ---- */
+.hv-texture {
+  background-image: radial-gradient(rgba(67, 160, 71, 0.12) 1px, transparent 1px);
+  background-size: 24px 24px;
+}
+
+.hv-texture-dark {
+  background-image: radial-gradient(rgba(255, 255, 255, 0.06) 1px, transparent 1px);
+  background-size: 24px 24px;
+}
+
+/* ---- Card shimmer on hover ---- */
+.card-shimmer {
+  position: relative;
+  overflow: hidden;
+}
+
+.card-shimmer::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 60%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.15),
+    transparent
+  );
+  transition: left 0.5s ease;
+}
+
+.card-shimmer:hover::after {
+  left: 150%;
+}
+
+/* ---- Premium button styles ---- */
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.625rem 1.5rem;
+  background: linear-gradient(135deg, #1B5E20, #43A047);
+  color: white;
+  border-radius: 9999px;
+  font-weight: 600;
+  font-size: 0.875rem;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 15px rgba(27, 94, 32, 0.3);
+}
+
+.btn-primary:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 20px rgba(27, 94, 32, 0.4);
+}
+
+.btn-primary:active {
+  transform: translateY(0);
+}
+
+.btn-outline {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.625rem 1.5rem;
+  background: transparent;
+  color: var(--hv-pine);
+  border: 2px solid var(--hv-pine);
+  border-radius: 9999px;
+  font-weight: 600;
+  font-size: 0.875rem;
+  transition: all 0.2s ease;
+}
+
+.btn-outline:hover {
+  background: var(--hv-pine);
+  color: white;
+  transform: translateY(-1px);
+}
+
+/* ---- Focus styles ---- */
 .hv-focus:focus-visible {
-  outline: 2px solid var(--hv-pine);
+  outline: 2px solid var(--hv-green);
   outline-offset: 2px;
+}
+
+/* ---- Animations ---- */
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-8px); }
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes shimmer {
+  0% { background-position: -200% center; }
+  100% { background-position: 200% center; }
+}
+
+@keyframes pulse-green {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(67, 160, 71, 0.4); }
+  50% { box-shadow: 0 0 0 8px rgba(67, 160, 71, 0); }
+}
+
+.animate-float {
+  animation: float 3s ease-in-out infinite;
+}
+
+.animate-fade-up {
+  animation: fadeInUp 0.6s ease-out forwards;
+}
+
+.animate-pulse-green {
+  animation: pulse-green 2s ease-in-out infinite;
+}
+
+/* ---- Scrollbar ---- */
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--hv-green-light);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--hv-green-soft);
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--hv-green);
+}
+
+/* ---- Selection ---- */
+::selection {
+  background: var(--hv-green-light);
+  color: var(--hv-pine);
 }
 
 @media (prefers-reduced-motion: reduce) {
