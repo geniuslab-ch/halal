@@ -4,6 +4,8 @@ import { authOptions } from "@/lib/auth";
 import { stripe, generatePaymentRef } from "@/lib/stripe";
 import { prisma } from "@/lib/prisma";
 
+export const dynamic = "force-dynamic";
+
 export async function POST(req: NextRequest) {
   try {
     const session = await getServerSession(authOptions);
@@ -84,8 +86,8 @@ export async function POST(req: NextRequest) {
         orderId: order.id,
         paymentRef,
       },
-      success_url: `${process.env.NEXTAUTH_URL}/orders/success?ref=${paymentRef}`,
-      cancel_url: `${process.env.NEXTAUTH_URL}/checkout?cancelled=true`,
+      success_url: `${process.env.NEXTAUTH_URL || ""}/orders/success?ref=${paymentRef}`,
+      cancel_url: `${process.env.NEXTAUTH_URL || ""}/checkout?cancelled=true`,
     });
 
     // Update order with Stripe session ID
