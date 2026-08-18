@@ -23,16 +23,21 @@ enum Role {
 }
 
 model User {
-  id            String   @id @default(cuid())
-  email         String   @unique
+  id            String    @id @default(cuid())
+  email         String    @unique
+  emailVerified DateTime?
   name          String?
+  password      String?   // bcrypt hash — null for OAuth users
   phone         String?
   city          String?
-  role          Role     @default(CUSTOMER)
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
+  role          Role      @default(CUSTOMER)
+  image         String?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
 
-  shops             Shop[]             @relation("ShopOwners")
+  accounts          Account[]
+  sessions          Session[]
+  shops             Shop[]              @relation("ShopOwners")
   reviews           Review[]
   favouriteShops    FavouriteShop[]
   favouriteProducts FavouriteProduct[]
@@ -40,6 +45,44 @@ model User {
   customerRequests  CustomerRequest[]
   productAlerts     ProductAlert[]
   analyticsEvents   AnalyticsEvent[]
+  orders            Order[]
+}
+
+// ---------- NextAuth Adapter Models ----------
+
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String? @db.Text
+  access_token      String? @db.Text
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.Text
+  session_state     String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
 }
 
 // ---------- Geography ----------
@@ -84,12 +127,14 @@ model Shop {
   whatsapp    String?
   website     String?
   instagram   String?
+  iban        String?    // bank account for direct payment
   delivery    Boolean    @default(false)
   pickup      Boolean    @default(false)
   paymentMethods String? // comma separated for MVP simplicity
   languages   String?    // comma separated
   status      ShopStatus @default(UNCLAIMED)
   plan        PlanTier   @default(FREE)
+  stripeAccountId String? // Stripe Connect account ID
   createdAt   DateTime   @default(now())
   updatedAt   DateTime   @updatedAt
 
@@ -100,6 +145,7 @@ model Shop {
   reviews         Review[]
   favouritedBy    FavouriteShop[]
   analyticsEvents AnalyticsEvent[]
+  orders          Order[]
 
   @@unique([cityId, slug])
   @@index([status])
@@ -143,6 +189,7 @@ model Product {
   category    ProductCategory? @relation(fields: [categoryId], references: [id])
   description String?
   image       String?
+  images      String?  // JSON array of additional image URLs
   size        String?
   weight      String?
   unit        String?
@@ -185,8 +232,9 @@ model ShopProduct {
   createdAt            DateTime    @default(now())
   updatedAt            DateTime    @updatedAt
 
-  promotions Promotion[]
-  requests   CustomerRequest[]
+  promotions  Promotion[]
+  requests    CustomerRequest[]
+  orderItems  OrderItem[]
 
   @@unique([productId, shopId])
   @@index([shopId])
@@ -218,6 +266,56 @@ model Promotion {
 
   @@index([shopId])
   @@index([status])
+}
+
+// ---------- Orders & Checkout ----------
+
+enum OrderStatus {
+  PENDING_PAYMENT
+  PAID
+  PREPARING
+  READY
+  DELIVERED
+  CANCELLED
+}
+
+model Order {
+  id              String      @id @default(cuid())
+  customerId      String?
+  customer        User?       @relation(fields: [customerId], references: [id])
+  shopId          String
+  shop            Shop        @relation(fields: [shopId], references: [id])
+  items           OrderItem[]
+  deliveryAddress String
+  deliveryCity    String
+  deliveryZip     String
+  customerName    String
+  customerPhone   String?
+  totalAmount     Float
+  currency        String      @default("CHF")
+  paymentRef      String      @unique // e.g. HV-2026-AB3XY
+  stripeSessionId String?     // Stripe Checkout session ID
+  status          OrderStatus @default(PENDING_PAYMENT)
+  notes           String?
+  createdAt       DateTime    @default(now())
+  updatedAt       DateTime    @updatedAt
+
+  @@index([customerId])
+  @@index([shopId])
+  @@index([status])
+}
+
+model OrderItem {
+  id            String      @id @default(cuid())
+  orderId       String
+  order         Order       @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  shopProductId String
+  shopProduct   ShopProduct @relation(fields: [shopProductId], references: [id])
+  quantity      Int         @default(1)
+  unitPrice     Float
+  productName   String      // snapshot at time of order
+
+  @@index([orderId])
 }
 
 // ---------- Reviews & Favourites ----------
